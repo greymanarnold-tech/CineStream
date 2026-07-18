@@ -1,0 +1,782 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>My List | CineStream+</title>
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+    />
+    <style>
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      }
+
+      :root {
+        --primary: #141414;
+        --secondary: #1f1f1f;
+        --accent: #e50914;
+        --accent-light: #ff3b45;
+        --text: #ffffff;
+        --text-secondary: #b3b3b3;
+        --card-bg: #181818;
+        --card-hover: #2d2d2d;
+        --success: #2ecc71;
+        --warning: #f39c12;
+        --info: #3498db;
+      }
+
+      body {
+        background-color: var(--primary);
+        color: var(--text);
+        line-height: 1.6;
+        padding: 20px;
+        min-height: 100vh;
+      }
+
+      .container {
+        max-width: 1200px;
+        margin: 0 auto;
+      }
+
+      .page-header {
+        margin-bottom: 30px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        flex-wrap: wrap;
+        gap: 20px;
+      }
+
+      .page-title {
+        font-size: 32px;
+        display: flex;
+        align-items: center;
+        gap: 15px;
+      }
+
+      .page-actions {
+        display: flex;
+        gap: 15px;
+      }
+
+      .action-btn {
+        background: var(--secondary);
+        color: var(--text);
+        border: none;
+        border-radius: 6px;
+        padding: 10px 20px;
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        transition: all 0.3s;
+      }
+
+      .action-btn:hover {
+        background: var(--card-hover);
+      }
+
+      .action-btn.active {
+        background: var(--accent);
+      }
+
+      .sort-options {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        margin-bottom: 20px;
+        padding: 15px;
+        background: var(--card-bg);
+        border-radius: 8px;
+      }
+
+      .sort-label {
+        color: var(--text-secondary);
+      }
+
+      .sort-select {
+        background: var(--secondary);
+        color: var(--text);
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        border-radius: 4px;
+        padding: 8px 15px;
+        cursor: pointer;
+      }
+
+      .list-stats {
+        display: flex;
+        gap: 20px;
+        margin-bottom: 30px;
+        flex-wrap: wrap;
+      }
+
+      .stat-item {
+        background: var(--card-bg);
+        border-radius: 8px;
+        padding: 15px 20px;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        min-width: 120px;
+      }
+
+      .stat-value {
+        font-size: 24px;
+        font-weight: bold;
+        color: var(--accent);
+      }
+
+      .stat-label {
+        color: var(--text-secondary);
+        font-size: 14px;
+      }
+
+      /* Content Grid */
+      .content-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+        gap: 20px;
+        margin-bottom: 40px;
+      }
+
+      .content-item {
+        background: var(--card-bg);
+        border-radius: 8px;
+        overflow: hidden;
+        transition: all 0.3s;
+        cursor: grab;
+        position: relative;
+      }
+
+      .content-item:active {
+        cursor: grabbing;
+      }
+
+      .content-item.dragging {
+        opacity: 0.5;
+        transform: scale(0.95);
+        box-shadow: 0 0 20px rgba(229, 9, 20, 0.5);
+      }
+
+      .item-image {
+        width: 100%;
+        height: 120px;
+        object-fit: cover;
+      }
+
+      .item-content {
+        padding: 15px;
+      }
+
+      .item-title {
+        font-size: 16px;
+        margin-bottom: 8px;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+      }
+
+      .item-info {
+        color: var(--text-secondary);
+        font-size: 14px;
+        display: flex;
+        justify-content: space-between;
+      }
+
+      .item-actions {
+        display: flex;
+        justify-content: space-between;
+        margin-top: 15px;
+        padding-top: 15px;
+        border-top: 1px solid rgba(255, 255, 255, 0.1);
+      }
+
+      .item-btn {
+        background: none;
+        border: none;
+        color: var(--text-secondary);
+        cursor: pointer;
+        font-size: 14px;
+        transition: color 0.3s;
+      }
+
+      .item-btn:hover {
+        color: var(--text);
+      }
+
+      .item-btn.delete:hover {
+        color: var(--accent);
+      }
+
+      .item-type {
+        position: absolute;
+        top: 10px;
+        right: 10px;
+        background: rgba(0, 0, 0, 0.7);
+        padding: 4px 8px;
+        border-radius: 4px;
+        font-size: 12px;
+        font-weight: 500;
+      }
+
+      .item-type.movie {
+        color: var(--info);
+      }
+
+      .item-type.tv {
+        color: var(--success);
+      }
+
+      /* Drop Zones */
+      .drop-indicator {
+        height: 4px;
+        background: var(--accent);
+        border-radius: 2px;
+        margin: 10px 0;
+        opacity: 0;
+        transition: opacity 0.2s;
+      }
+
+      .drop-zone .drop-indicator {
+        opacity: 1;
+      }
+
+      /* Empty State */
+      .empty-state {
+        text-align: center;
+        padding: 60px 20px;
+        background: var(--card-bg);
+        border-radius: 10px;
+        margin: 40px 0;
+      }
+
+      .empty-icon {
+        font-size: 60px;
+        color: var(--text-secondary);
+        margin-bottom: 20px;
+      }
+
+      .empty-title {
+        font-size: 24px;
+        margin-bottom: 15px;
+      }
+
+      .empty-text {
+        color: var(--text-secondary);
+        max-width: 500px;
+        margin: 0 auto 30px;
+      }
+
+      .browse-btn {
+        background: var(--accent);
+        color: white;
+        border: none;
+        border-radius: 6px;
+        padding: 12px 25px;
+        cursor: pointer;
+        font-weight: bold;
+        transition: background 0.3s;
+        display: inline-flex;
+        align-items: center;
+        gap: 10px;
+      }
+
+      .browse-btn:hover {
+        background: var(--accent-light);
+      }
+
+      /* Responsive Design */
+      @media (max-width: 768px) {
+        .page-header {
+          flex-direction: column;
+          align-items: flex-start;
+        }
+
+        .content-grid {
+          grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+        }
+
+        .list-stats {
+          flex-wrap: wrap;
+        }
+
+        .stat-item {
+          flex: 1;
+          min-width: 100px;
+        }
+      }
+
+      @media (max-width: 480px) {
+        .content-grid {
+          grid-template-columns: repeat(2, 1fr);
+        }
+
+        .page-actions {
+          width: 100%;
+          justify-content: space-between;
+        }
+
+        .action-btn {
+          flex: 1;
+          justify-content: center;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <div class="page-header">
+        <h1 class="page-title"><i class="fas fa-bookmark"></i> My List</h1>
+        <div class="page-actions">
+          <button class="action-btn active" data-filter="all">
+            <i class="fas fa-layer-group"></i> All
+          </button>
+          <button class="action-btn" data-filter="movies">
+            <i class="fas fa-film"></i> Movies
+          </button>
+          <button class="action-btn" data-filter="tv">
+            <i class="fas fa-tv"></i> TV Shows
+          </button>
+        </div>
+      </div>
+
+      <div class="sort-options">
+        <span class="sort-label">Sort by:</span>
+        <select class="sort-select" id="sortSelect">
+          <option value="custom">Custom Order</option>
+          <option value="date">Date Added</option>
+          <option value="title">Title</option>
+          <option value="year">Release Year</option>
+        </select>
+      </div>
+
+      <div class="list-stats">
+        <div class="stat-item">
+          <span class="stat-value" id="totalCount">12</span>
+          <span class="stat-label">Total Items</span>
+        </div>
+        <div class="stat-item">
+          <span class="stat-value" id="movieCount">8</span>
+          <span class="stat-label">Movies</span>
+        </div>
+        <div class="stat-item">
+          <span class="stat-value" id="tvCount">4</span>
+          <span class="stat-label">TV Shows</span>
+        </div>
+        <div class="stat-item">
+          <span class="stat-value">47h 22m</span>
+          <span class="stat-label">Total Watch Time</span>
+        </div>
+      </div>
+
+      <div class="content-grid" id="contentGrid">
+        <!-- Content items will be added here dynamically -->
+      </div>
+
+      <div class="empty-state" id="emptyState">
+        <div class="empty-icon">
+          <i class="fas fa-book-open"></i>
+        </div>
+        <h2 class="empty-title">Your list is empty</h2>
+        <p class="empty-text">
+          Start building your watchlist by browsing our catalog and adding
+          movies and TV shows you want to watch later.
+        </p>
+        <button class="browse-btn">
+          <i class="fas fa-compass"></i> Browse Content
+        </button>
+      </div>
+    </div>
+
+    <script>
+      document.addEventListener('DOMContentLoaded', function () {
+        const contentGrid = document.getElementById('contentGrid');
+        const emptyState = document.getElementById('emptyState');
+        const totalCount = document.getElementById('totalCount');
+        const movieCount = document.getElementById('movieCount');
+        const tvCount = document.getElementById('tvCount');
+        const filterButtons = document.querySelectorAll('.action-btn');
+        const sortSelect = document.getElementById('sortSelect');
+
+        // Sample content data
+        const contentItems = [
+          {
+            id: 1,
+            title: 'Oblivion Chronicles',
+            image: 'https://source.unsplash.com/random/300x200/?sci-fi',
+            type: 'movie',
+            year: 2023,
+            duration: '2h 15m',
+          },
+          {
+            id: 2,
+            title: 'Space Frontier',
+            image: 'https://source.unsplash.com/random/300x200/?space',
+            type: 'tv',
+            year: 2022,
+            duration: '4 Seasons',
+          },
+          {
+            id: 3,
+            title: 'Midnight Run',
+            image: 'https://source.unsplash.com/random/300x200/?action',
+            type: 'movie',
+            year: 2021,
+            duration: '1h 48m',
+          },
+          {
+            id: 4,
+            title: 'The Last Stand',
+            image: 'https://source.unsplash.com/random/300x200/?drama',
+            type: 'tv',
+            year: 2023,
+            duration: '2 Seasons',
+          },
+          {
+            id: 5,
+            title: 'Laugh Out Loud',
+            image: 'https://source.unsplash.com/random/300x200/?comedy',
+            type: 'movie',
+            year: 2020,
+            duration: '1h 35m',
+          },
+          {
+            id: 6,
+            title: 'Realm of Magic',
+            image: 'https://source.unsplash.com/random/300x200/?fantasy',
+            type: 'movie',
+            year: 2022,
+            duration: '2h 05m',
+          },
+          {
+            id: 7,
+            title: 'Lost Island',
+            image: 'https://source.unsplash.com/random/300x200/?adventure',
+            type: 'tv',
+            year: 2021,
+            duration: '3 Seasons',
+          },
+          {
+            id: 8,
+            title: 'Dark Secrets',
+            image: 'https://source.unsplash.com/random/300x200/?thriller',
+            type: 'movie',
+            year: 2023,
+            duration: '1h 52m',
+          },
+          {
+            id: 9,
+            title: 'Forever Yours',
+            image: 'https://source.unsplash.com/random/300x200/?romance',
+            type: 'movie',
+            year: 2020,
+            duration: '1h 45m',
+          },
+          {
+            id: 10,
+            title: 'Urban Legends',
+            image: 'https://source.unsplash.com/random/300x200/?horror',
+            type: 'tv',
+            year: 2022,
+            duration: '1 Season',
+          },
+          {
+            id: 11,
+            title: 'The Crown Jewels',
+            image: 'https://source.unsplash.com/random/300x200/?royal',
+            type: 'movie',
+            year: 2023,
+            duration: '2h 22m',
+          },
+          {
+            id: 12,
+            title: 'Elite Society',
+            image: 'https://source.unsplash.com/random/300x200/?drama',
+            type: 'movie',
+            year: 2021,
+            duration: '2h 10m',
+          },
+        ];
+
+        // Initialize the page
+        function initPage() {
+          renderContentItems(contentItems);
+          updateStats();
+          setupDragAndDrop();
+          setupFilterButtons();
+          setupSorting();
+
+          // Hide empty state if we have content
+          if (contentItems.length > 0) {
+            emptyState.style.display = 'none';
+          } else {
+            emptyState.style.display = 'block';
+          }
+        }
+
+        // Render content items
+        function renderContentItems(items) {
+          contentGrid.innerHTML = '';
+
+          items.forEach((item) => {
+            const contentItem = document.createElement('div');
+            contentItem.className = 'content-item';
+            contentItem.draggable = true;
+            contentItem.dataset.id = item.id;
+            contentItem.dataset.type = item.type;
+
+            contentItem.innerHTML = `
+                        <img src="${item.image}" alt="${
+              item.title
+            }" class="item-image">
+                        <span class="item-type ${item.type}">${
+              item.type === 'movie' ? 'Movie' : 'TV Show'
+            }</span>
+                        <div class="item-content">
+                            <h3 class="item-title">${item.title}</h3>
+                            <div class="item-info">
+                                <span>${item.year}</span>
+                                <span>${item.duration}</span>
+                            </div>
+                            <div class="item-actions">
+                                <button class="item-btn watch">
+                                    <i class="fas fa-play"></i> Play
+                                </button>
+                                <button class="item-btn delete">
+                                    <i class="fas fa-trash"></i> Remove
+                                </button>
+                            </div>
+                        </div>
+                    `;
+
+            contentGrid.appendChild(contentItem);
+          });
+
+          // Add drop indicators
+          const itemsWithIndicators =
+            document.querySelectorAll('.content-item');
+          itemsWithIndicators.forEach((item) => {
+            const dropIndicator = document.createElement('div');
+            dropIndicator.className = 'drop-indicator';
+            item.after(dropIndicator);
+          });
+        }
+
+        // Update statistics
+        function updateStats() {
+          const movies = contentItems.filter(
+            (item) => item.type === 'movie'
+          ).length;
+          const tvShows = contentItems.filter(
+            (item) => item.type === 'tv'
+          ).length;
+
+          totalCount.textContent = contentItems.length;
+          movieCount.textContent = movies;
+          tvCount.textContent = tvShows;
+        }
+
+        // Setup drag and drop functionality
+        function setupDragAndDrop() {
+          const draggables = document.querySelectorAll('.content-item');
+          const dropZones = document.querySelectorAll(
+            '.content-item, .drop-indicator'
+          );
+
+          let draggedItem = null;
+
+          draggables.forEach((draggable) => {
+            draggable.addEventListener('dragstart', function () {
+              draggedItem = this;
+              setTimeout(() => {
+                this.classList.add('dragging');
+              }, 0);
+            });
+
+            draggable.addEventListener('dragend', function () {
+              this.classList.remove('dragging');
+              draggedItem = null;
+
+              // Remove all drop zone highlights
+              dropZones.forEach((zone) => {
+                zone.classList.remove('drop-zone');
+              });
+            });
+          });
+
+          dropZones.forEach((zone) => {
+            zone.addEventListener('dragover', function (e) {
+              e.preventDefault();
+            });
+
+            zone.addEventListener('dragenter', function (e) {
+              e.preventDefault();
+              this.classList.add('drop-zone');
+            });
+
+            zone.addEventListener('dragleave', function () {
+              this.classList.remove('drop-zone');
+            });
+
+            zone.addEventListener('drop', function (e) {
+              e.preventDefault();
+              this.classList.remove('drop-zone');
+
+              if (this.classList.contains('content-item')) {
+                // Insert before the item we're dropping on
+                if (this !== draggedItem) {
+                  const allItems = Array.from(
+                    contentGrid.querySelectorAll('.content-item')
+                  );
+                  const thisIndex = allItems.indexOf(this);
+                  const draggedIndex = allItems.indexOf(draggedItem);
+
+                  if (draggedIndex < thisIndex) {
+                    contentGrid.insertBefore(draggedItem, this.nextSibling);
+                  } else {
+                    contentGrid.insertBefore(draggedItem, this);
+                  }
+                }
+              } else if (this.classList.contains('drop-indicator')) {
+                // Insert before the drop indicator
+                contentGrid.insertBefore(draggedItem, this);
+              }
+
+              // Update the contentItems array order
+              updateContentOrder();
+            });
+          });
+        }
+
+        // Update content order based on DOM
+        function updateContentOrder() {
+          const newOrder = [];
+          const domItems = contentGrid.querySelectorAll('.content-item');
+
+          domItems.forEach((item) => {
+            const id = parseInt(item.dataset.id);
+            const contentItem = contentItems.find((i) => i.id === id);
+            if (contentItem) {
+              newOrder.push(contentItem);
+            }
+          });
+
+          // Replace the contentItems array with the new order
+          contentItems.length = 0;
+          contentItems.push(...newOrder);
+
+          // Show a temporary message about order being saved
+          showOrderSavedMessage();
+        }
+
+        // Show order saved message
+        function showOrderSavedMessage() {
+          // Create message element if it doesn't exist
+          let message = document.getElementById('orderSavedMessage');
+          if (!message) {
+            message = document.createElement('div');
+            message.id = 'orderSavedMessage';
+            message.style.position = 'fixed';
+            message.style.bottom = '20px';
+            message.style.right = '20px';
+            message.style.background = 'var(--success)';
+            message.style.color = 'white';
+            message.style.padding = '10px 20px';
+            message.style.borderRadius = '6px';
+            message.style.zIndex = '1000';
+            message.style.opacity = '0';
+            message.style.transition = 'opacity 0.3s';
+            document.body.appendChild(message);
+          }
+
+          message.textContent = 'List order saved';
+          message.style.opacity = '1';
+
+          // Hide after 2 seconds
+          setTimeout(() => {
+            message.style.opacity = '0';
+          }, 2000);
+        }
+
+        // Setup filter buttons
+        function setupFilterButtons() {
+          filterButtons.forEach((button) => {
+            button.addEventListener('click', function () {
+              // Remove active class from all buttons
+              filterButtons.forEach((btn) => btn.classList.remove('active'));
+
+              // Add active class to clicked button
+              this.classList.add('active');
+
+              // Filter content
+              const filter = this.dataset.filter;
+              let filteredItems = contentItems;
+
+              if (filter !== 'all') {
+                filteredItems = contentItems.filter(
+                  (item) => item.type === filter
+                );
+              }
+
+              renderContentItems(filteredItems);
+              setupDragAndDrop();
+
+              // Show empty state if no content after filtering
+              if (filteredItems.length === 0) {
+                emptyState.style.display = 'block';
+                emptyState.querySelector('.empty-title').textContent = `No ${
+                  filter === 'all' ? 'content' : filter
+                } in your list`;
+                emptyState.querySelector(
+                  '.empty-text'
+                ).textContent = `You haven't added any ${
+                  filter === 'all' ? 'content' : filter
+                } to your list yet.`;
+              } else {
+                emptyState.style.display = 'none';
+              }
+            });
+          });
+        }
+
+        // Setup sorting
+        function setupSorting() {
+          sortSelect.addEventListener('change', function () {
+            const sortBy = this.value;
+
+            if (sortBy === 'custom') {
+              // Already in custom order from drag and drop
+              return;
+            }
+
+            let sortedItems = [...contentItems];
+
+            switch (sortBy) {
+              case 'date':
+                // Simulate date added (reverse order of IDs for demo)
+                sortedItems.sort((a, b) => b.id - a.id);
+                break;
+              case 'title':
+                sortedItems.sort((a, b) => a.title.localeCompare(b.title));
+                break;
+              case 'year':
+                sortedItems.sort((a, b) => b.year - a.year);
+                break;
+            }
+
+            renderContentItems(sortedItems);
+            setupDragAndDrop();
+          });
+        }
+
+        // Initialize the page
+        initPage();
+      });
+    </script>
+  </body>
+</html>

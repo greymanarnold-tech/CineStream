@@ -1,0 +1,620 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>My Profile | CineStream+</title>
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+    />
+    <style>
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      }
+
+      :root {
+        --primary: #141414;
+        --secondary: #1f1f1f;
+        --accent: #e50914;
+        --text: #ffffff;
+        --text-secondary: #b3b3b3;
+        --card-bg: #181818;
+        --card-hover: #2d2d2d;
+        --success: #2ecc71;
+        --warning: #f39c12;
+      }
+
+      body {
+        background-color: var(--primary);
+        color: var(--text);
+        line-height: 1.6;
+        padding: 20px;
+        min-height: 100vh;
+      }
+
+      .container {
+        max-width: 1000px;
+        margin: 0 auto;
+        display: grid;
+        grid-template-columns: 1fr 2fr;
+        gap: 30px;
+      }
+
+      /* Profile Sidebar */
+      .profile-sidebar {
+        background: var(--card-bg);
+        border-radius: 10px;
+        padding: 30px;
+        text-align: center;
+        height: fit-content;
+      }
+
+      .profile-avatar {
+        width: 120px;
+        height: 120px;
+        border-radius: 50%;
+        object-fit: cover;
+        margin: 0 auto 20px;
+        border: 3px solid var(--accent);
+      }
+
+      .profile-name {
+        font-size: 24px;
+        margin-bottom: 5px;
+      }
+
+      .profile-email {
+        color: var(--text-secondary);
+        margin-bottom: 20px;
+      }
+
+      .profile-stats {
+        display: flex;
+        justify-content: space-around;
+        margin: 25px 0;
+      }
+
+      .stat {
+        text-align: center;
+      }
+
+      .stat-value {
+        font-size: 20px;
+        font-weight: bold;
+        display: block;
+      }
+
+      .stat-label {
+        font-size: 14px;
+        color: var(--text-secondary);
+      }
+
+      .membership-badge {
+        background: linear-gradient(45deg, #f39c12, #e74c3c);
+        color: white;
+        padding: 8px 15px;
+        border-radius: 20px;
+        font-size: 14px;
+        font-weight: bold;
+        display: inline-block;
+        margin-top: 10px;
+      }
+
+      /* Main Content */
+      .profile-content {
+        background: var(--card-bg);
+        border-radius: 10px;
+        padding: 30px;
+      }
+
+      .section-title {
+        font-size: 22px;
+        margin-bottom: 25px;
+        padding-bottom: 10px;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+      }
+
+      /* Profile Form */
+      .form-group {
+        margin-bottom: 20px;
+      }
+
+      .form-label {
+        display: block;
+        margin-bottom: 8px;
+        font-weight: 500;
+      }
+
+      .form-input {
+        width: 100%;
+        background: var(--secondary);
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        border-radius: 4px;
+        padding: 12px 15px;
+        color: var(--text);
+        font-size: 16px;
+      }
+
+      .form-input:focus {
+        outline: none;
+        border-color: var(--accent);
+      }
+
+      .form-hint {
+        font-size: 14px;
+        color: var(--text-secondary);
+        margin-top: 5px;
+      }
+
+      .btn {
+        background: var(--accent);
+        color: white;
+        border: none;
+        border-radius: 4px;
+        padding: 12px 20px;
+        cursor: pointer;
+        font-weight: bold;
+        transition: background 0.3s;
+        font-size: 16px;
+      }
+
+      .btn:hover {
+        background: #f40612;
+      }
+
+      .btn-outline {
+        background: transparent;
+        border: 1px solid var(--text);
+        color: var(--text);
+      }
+
+      .btn-outline:hover {
+        background: rgba(255, 255, 255, 0.1);
+      }
+
+      /* Subscription Section */
+      .subscription-card {
+        background: linear-gradient(45deg, var(--secondary), #2a2a2a);
+        border-radius: 8px;
+        padding: 20px;
+        margin-bottom: 25px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+      }
+
+      .subscription-info h3 {
+        margin-bottom: 5px;
+      }
+
+      .subscription-status {
+        color: var(--success);
+        font-weight: 500;
+      }
+
+      /* Devices Section */
+      .devices-list {
+        display: flex;
+        flex-direction: column;
+        gap: 15px;
+      }
+
+      .device-item {
+        display: flex;
+        align-items: center;
+        padding: 15px;
+        background: var(--secondary);
+        border-radius: 8px;
+      }
+
+      .device-icon {
+        font-size: 24px;
+        margin-right: 15px;
+        width: 40px;
+        text-align: center;
+      }
+
+      .device-info {
+        flex: 1;
+      }
+
+      .device-name {
+        font-weight: 500;
+        margin-bottom: 3px;
+      }
+
+      .device-details {
+        font-size: 14px;
+        color: var(--text-secondary);
+      }
+
+      .device-action {
+        color: var(--accent);
+        background: none;
+        border: none;
+        cursor: pointer;
+        font-weight: 500;
+      }
+
+      /* Preferences */
+      .preferences-list {
+        display: flex;
+        flex-direction: column;
+        gap: 15px;
+      }
+
+      .preference-item {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 15px;
+        background: var(--secondary);
+        border-radius: 8px;
+      }
+
+      .preference-info h4 {
+        margin-bottom: 5px;
+      }
+
+      .preference-info p {
+        font-size: 14px;
+        color: var(--text-secondary);
+      }
+
+      .toggle-switch {
+        position: relative;
+        display: inline-block;
+        width: 50px;
+        height: 24px;
+      }
+
+      .toggle-switch input {
+        opacity: 0;
+        width: 0;
+        height: 0;
+      }
+
+      .slider {
+        position: absolute;
+        cursor: pointer;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background-color: #ccc;
+        transition: 0.4s;
+        border-radius: 24px;
+      }
+
+      .slider:before {
+        position: absolute;
+        content: '';
+        height: 16px;
+        width: 16px;
+        left: 4px;
+        bottom: 4px;
+        background-color: white;
+        transition: 0.4s;
+        border-radius: 50%;
+      }
+
+      input:checked + .slider {
+        background-color: var(--accent);
+      }
+
+      input:checked + .slider:before {
+        transform: translateX(26px);
+      }
+
+      /* Danger Zone */
+      .danger-zone {
+        border: 1px solid rgba(231, 76, 60, 0.3);
+        border-radius: 8px;
+        padding: 20px;
+        margin-top: 30px;
+        background: rgba(231, 76, 60, 0.05);
+      }
+
+      .danger-zone h3 {
+        color: #e74c3c;
+        margin-bottom: 15px;
+      }
+
+      .danger-btn {
+        background: #e74c3c;
+        color: white;
+        border: none;
+        border-radius: 4px;
+        padding: 10px 15px;
+        cursor: pointer;
+        font-weight: 500;
+      }
+
+      .danger-btn:hover {
+        background: #c0392b;
+      }
+
+      /* Responsive Design */
+      @media (max-width: 768px) {
+        .container {
+          grid-template-columns: 1fr;
+        }
+
+        .profile-stats {
+          flex-wrap: wrap;
+          gap: 15px;
+        }
+
+        .stat {
+          flex: 1 0 40%;
+          margin-bottom: 10px;
+        }
+
+        .subscription-card {
+          flex-direction: column;
+          align-items: flex-start;
+          gap: 15px;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <!-- Profile Sidebar -->
+      <div class="profile-sidebar">
+        <img
+          src="https://source.unsplash.com/random/300x300/?person"
+          alt="Profile"
+          class="profile-avatar"
+        />
+        <h2 class="profile-name">Alex Johnson</h2>
+        <p class="profile-email">alex.johnson@example.com</p>
+
+        <div class="membership-badge">
+          <i class="fas fa-crown"></i> Premium Member
+        </div>
+
+        <div class="profile-stats">
+          <div class="stat">
+            <span class="stat-value">247</span>
+            <span class="stat-label">Hours Watched</span>
+          </div>
+          <div class="stat">
+            <span class="stat-value">42</span>
+            <span class="stat-label">Favorites</span>
+          </div>
+          <div class="stat">
+            <span class="stat-value">18</span>
+            <span class="stat-label">Watchlist</span>
+          </div>
+        </div>
+
+        <button class="btn btn-outline" style="width: 100%">
+          <i class="fas fa-edit"></i> Edit Avatar
+        </button>
+      </div>
+
+      <!-- Main Content -->
+      <div class="profile-content">
+        <!-- Account Settings -->
+        <h2 class="section-title">Account Settings</h2>
+
+        <div class="form-group">
+          <label class="form-label">Full Name</label>
+          <input type="text" class="form-input" value="Alex Johnson" />
+        </div>
+
+        <div class="form-group">
+          <label class="form-label">Email Address</label>
+          <input
+            type="email"
+            class="form-input"
+            value="alex.johnson@example.com"
+          />
+          <p class="form-hint">
+            This is the email you use to sign in to your account
+          </p>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label">Phone Number</label>
+          <input type="tel" class="form-input" value="+1 (555) 123-4567" />
+        </div>
+
+        <div class="form-group">
+          <label class="form-label">Date of Birth</label>
+          <input type="date" class="form-input" value="1985-06-15" />
+        </div>
+
+        <button class="btn">Save Changes</button>
+
+        <!-- Subscription -->
+        <h2 class="section-title" style="margin-top: 40px">Subscription</h2>
+
+        <div class="subscription-card">
+          <div class="subscription-info">
+            <h3>Premium Plan</h3>
+            <p class="subscription-status">Active • Renews on Oct 15, 2023</p>
+          </div>
+          <button class="btn btn-outline">Manage Plan</button>
+        </div>
+
+        <!-- Connected Devices -->
+        <h2 class="section-title">Connected Devices</h2>
+
+        <div class="devices-list">
+          <div class="device-item">
+            <div class="device-icon">
+              <i class="fas fa-laptop"></i>
+            </div>
+            <div class="device-info">
+              <div class="device-name">MacBook Pro</div>
+              <div class="device-details">Last active: Today, 2:45 PM</div>
+            </div>
+            <button class="device-action">Remove</button>
+          </div>
+
+          <div class="device-item">
+            <div class="device-icon">
+              <i class="fas fa-mobile-alt"></i>
+            </div>
+            <div class="device-info">
+              <div class="device-name">iPhone 13</div>
+              <div class="device-details">Last active: Today, 1:30 PM</div>
+            </div>
+            <button class="device-action">Remove</button>
+          </div>
+
+          <div class="device-item">
+            <div class="device-icon">
+              <i class="fas fa-tablet-alt"></i>
+            </div>
+            <div class="device-info">
+              <div class="device-name">iPad Air</div>
+              <div class="device-details">Last active: Yesterday, 7:15 PM</div>
+            </div>
+            <button class="device-action">Remove</button>
+          </div>
+        </div>
+
+        <!-- Preferences -->
+        <h2 class="section-title">Preferences</h2>
+
+        <div class="preferences-list">
+          <div class="preference-item">
+            <div class="preference-info">
+              <h4>Autoplay Next Episode</h4>
+              <p>Play next episode automatically</p>
+            </div>
+            <label class="toggle-switch">
+              <input type="checkbox" checked />
+              <span class="slider"></span>
+            </label>
+          </div>
+
+          <div class="preference-item">
+            <div class="preference-info">
+              <h4>Download in HD</h4>
+              <p>Higher quality downloads (uses more storage)</p>
+            </div>
+            <label class="toggle-switch">
+              <input type="checkbox" checked />
+              <span class="slider"></span>
+            </label>
+          </div>
+
+          <div class="preference-item">
+            <div class="preference-info">
+              <h4>Email Notifications</h4>
+              <p>Receive emails about new content and features</p>
+            </div>
+            <label class="toggle-switch">
+              <input type="checkbox" />
+              <span class="slider"></span>
+            </label>
+          </div>
+
+          <div class="preference-item">
+            <div class="preference-info">
+              <h4>Mature Content</h4>
+              <p>Show titles with mature content</p>
+            </div>
+            <label class="toggle-switch">
+              <input type="checkbox" />
+              <span class="slider"></span>
+            </label>
+          </div>
+        </div>
+
+        <!-- Danger Zone -->
+        <div class="danger-zone">
+          <h3>Danger Zone</h3>
+          <p>Once you take these actions, they cannot be undone.</p>
+
+          <div style="display: flex; gap: 15px; margin-top: 15px">
+            <button class="danger-btn">
+              <i class="fas fa-sign-out-alt"></i> Sign Out of All Devices
+            </button>
+            <button class="danger-btn">
+              <i class="fas fa-trash-alt"></i> Delete Account
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <script>
+      document.addEventListener('DOMContentLoaded', function () {
+        // Toggle switches functionality
+        const toggles = document.querySelectorAll('.toggle-switch input');
+        toggles.forEach((toggle) => {
+          toggle.addEventListener('change', function () {
+            // In a real app, you would save the preference to a server
+            console.log(`Toggle changed: ${this.checked}`);
+          });
+        });
+
+        // Device removal
+        const deviceButtons = document.querySelectorAll('.device-action');
+        deviceButtons.forEach((button) => {
+          button.addEventListener('click', function () {
+            const deviceItem = this.closest('.device-item');
+            if (confirm('Are you sure you want to remove this device?')) {
+              deviceItem.style.opacity = '0';
+              setTimeout(() => {
+                deviceItem.remove();
+              }, 300);
+            }
+          });
+        });
+
+        // Save changes button
+        const saveButton = document.querySelector('.btn');
+        saveButton.addEventListener('click', function () {
+          this.textContent = 'Saving...';
+          this.disabled = true;
+
+          // Simulate saving
+          setTimeout(() => {
+            this.textContent = 'Saved!';
+            this.style.background = 'var(--success)';
+
+            setTimeout(() => {
+              this.textContent = 'Save Changes';
+              this.style.background = 'var(--accent)';
+              this.disabled = false;
+            }, 2000);
+          }, 1000);
+        });
+
+        // Danger buttons
+        const dangerButtons = document.querySelectorAll('.danger-btn');
+        dangerButtons.forEach((button) => {
+          button.addEventListener('click', function () {
+            if (this.textContent.includes('Sign Out')) {
+              if (
+                confirm('Are you sure you want to sign out of all devices?')
+              ) {
+                alert('You have been signed out of all devices.');
+              }
+            } else if (this.textContent.includes('Delete')) {
+              if (
+                confirm(
+                  'This will permanently delete your account and all data. Are you sure?'
+                )
+              ) {
+                alert(
+                  'Account deletion process started. Check your email for confirmation.'
+                );
+              }
+            }
+          });
+        });
+      });
+    </script>
+  </body>
+</html>

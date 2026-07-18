@@ -1,0 +1,975 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Payment Methods | CineStream+</title>
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+    />
+    <style>
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      }
+
+      :root {
+        --primary: #141414;
+        --secondary: #1f1f1f;
+        --accent: #e50914;
+        --accent-light: #ff3b45;
+        --text: #ffffff;
+        --text-secondary: #b3b3b3;
+        --card-bg: #181818;
+        --card-hover: #2d2d2d;
+        --success: #2ecc71;
+        --warning: #f39c12;
+        --info: #3498db;
+        --mpesa: #00a650;
+        --airtel: #ff0000;
+        --paypal: #009cde;
+        --crypto: #f7931a;
+        --visa: #1a1f71;
+        --mastercard: #eb001b;
+      }
+
+      body {
+        background-color: var(--primary);
+        color: var(--text);
+        line-height: 1.6;
+        padding: 20px;
+        min-height: 100vh;
+      }
+
+      .container {
+        max-width: 1000px;
+        margin: 0 auto;
+      }
+
+      .page-header {
+        text-align: center;
+        margin-bottom: 40px;
+        padding-bottom: 20px;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+      }
+
+      .page-title {
+        font-size: 32px;
+        margin-bottom: 15px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 15px;
+      }
+
+      .page-subtitle {
+        color: var(--text-secondary);
+        font-size: 18px;
+        max-width: 600px;
+        margin: 0 auto;
+      }
+
+      /* Order Summary */
+      .order-summary {
+        background: var(--card-bg);
+        border-radius: 10px;
+        padding: 25px;
+        margin-bottom: 30px;
+      }
+
+      .summary-title {
+        font-size: 20px;
+        margin-bottom: 20px;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+      }
+
+      .summary-item {
+        display: flex;
+        justify-content: space-between;
+        margin-bottom: 15px;
+        padding-bottom: 15px;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+      }
+
+      .summary-total {
+        display: flex;
+        justify-content: space-between;
+        font-size: 20px;
+        font-weight: bold;
+        margin-top: 20px;
+        padding-top: 20px;
+        border-top: 2px solid rgba(255, 255, 255, 0.2);
+      }
+
+      /* Payment Methods */
+      .payment-methods {
+        margin-bottom: 40px;
+      }
+
+      .methods-title {
+        font-size: 24px;
+        margin-bottom: 25px;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+      }
+
+      .methods-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+        gap: 20px;
+      }
+
+      .payment-method {
+        background: var(--card-bg);
+        border-radius: 10px;
+        padding: 25px;
+        cursor: pointer;
+        transition: all 0.3s;
+        border: 2px solid transparent;
+        position: relative;
+      }
+
+      .payment-method:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 10px 25px rgba(0, 0, 0, 0.3);
+      }
+
+      .payment-method.selected {
+        border-color: var(--accent);
+        background: rgba(229, 9, 20, 0.05);
+      }
+
+      .method-header {
+        display: flex;
+        align-items: center;
+        gap: 15px;
+        margin-bottom: 15px;
+      }
+
+      .method-icon {
+        width: 50px;
+        height: 50px;
+        border-radius: 10px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 24px;
+        color: white;
+      }
+
+      .icon-mpesa {
+        background: var(--mpesa);
+      }
+
+      .icon-airtel {
+        background: var(--airtel);
+      }
+
+      .icon-paypal {
+        background: var(--paypal);
+      }
+
+      .icon-crypto {
+        background: var(--crypto);
+      }
+
+      .icon-card {
+        background: var(--visa);
+      }
+
+      .icon-bank {
+        background: var(--info);
+      }
+
+      .method-name {
+        font-size: 18px;
+        font-weight: 500;
+      }
+
+      .method-description {
+        color: var(--text-secondary);
+        margin-bottom: 15px;
+        font-size: 14px;
+      }
+
+      .method-features {
+        list-style-type: none;
+        margin-top: 15px;
+      }
+
+      .method-features li {
+        margin-bottom: 8px;
+        font-size: 14px;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+      }
+
+      .method-features li i {
+        color: var(--success);
+      }
+
+      .method-badge {
+        position: absolute;
+        top: 15px;
+        right: 15px;
+        background: var(--success);
+        color: white;
+        padding: 3px 10px;
+        border-radius: 20px;
+        font-size: 12px;
+        font-weight: 500;
+      }
+
+      /* Payment Form */
+      .payment-form-container {
+        background: var(--card-bg);
+        border-radius: 10px;
+        padding: 30px;
+        margin-bottom: 30px;
+        display: none;
+      }
+
+      .payment-form-container.active {
+        display: block;
+      }
+
+      .form-title {
+        font-size: 20px;
+        margin-bottom: 20px;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+      }
+
+      .form-group {
+        margin-bottom: 20px;
+      }
+
+      .form-label {
+        display: block;
+        margin-bottom: 8px;
+        font-weight: 500;
+      }
+
+      .form-input {
+        width: 100%;
+        background: var(--secondary);
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        border-radius: 6px;
+        padding: 15px;
+        color: var(--text);
+        font-size: 16px;
+        transition: all 0.3s;
+      }
+
+      .form-input:focus {
+        outline: none;
+        border-color: var(--accent);
+        box-shadow: 0 0 0 3px rgba(229, 9, 20, 0.2);
+      }
+
+      .form-row {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 15px;
+      }
+
+      .crypto-options {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+        gap: 10px;
+        margin-bottom: 20px;
+      }
+
+      .crypto-option {
+        background: var(--secondary);
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        border-radius: 6px;
+        padding: 15px;
+        text-align: center;
+        cursor: pointer;
+        transition: all 0.3s;
+      }
+
+      .crypto-option:hover {
+        border-color: var(--crypto);
+      }
+
+      .crypto-option.selected {
+        border-color: var(--crypto);
+        background: rgba(247, 147, 26, 0.1);
+      }
+
+      .crypto-icon {
+        font-size: 24px;
+        margin-bottom: 10px;
+        color: var(--crypto);
+      }
+
+      .crypto-name {
+        font-size: 14px;
+      }
+
+      .phone-input-container {
+        display: flex;
+        align-items: center;
+        background: var(--secondary);
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        border-radius: 6px;
+        overflow: hidden;
+      }
+
+      .phone-prefix {
+        padding: 0 15px;
+        background: rgba(255, 255, 255, 0.05);
+        height: 100%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        border-right: 1px solid rgba(255, 255, 255, 0.1);
+      }
+
+      .phone-input {
+        flex: 1;
+        border: none;
+        background: transparent;
+        padding: 15px;
+        color: var(--text);
+        font-size: 16px;
+      }
+
+      .phone-input:focus {
+        outline: none;
+      }
+
+      .form-hint {
+        font-size: 14px;
+        color: var(--text-secondary);
+        margin-top: 5px;
+      }
+
+      .btn {
+        background: var(--accent);
+        color: white;
+        border: none;
+        border-radius: 6px;
+        padding: 16px 30px;
+        cursor: pointer;
+        font-weight: bold;
+        transition: background 0.3s;
+        font-size: 16px;
+        display: inline-flex;
+        align-items: center;
+        gap: 10px;
+        width: 100%;
+        justify-content: center;
+      }
+
+      .btn:hover {
+        background: var(--accent-light);
+      }
+
+      .btn:disabled {
+        background: var(--text-secondary);
+        cursor: not-allowed;
+      }
+
+      /* Security Badge */
+      .security-badge {
+        text-align: center;
+        margin-top: 30px;
+        padding-top: 20px;
+        border-top: 1px solid rgba(255, 255, 255, 0.1);
+      }
+
+      .security-badge p {
+        color: var(--text-secondary);
+        font-size: 14px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 10px;
+      }
+
+      /* Responsive Design */
+      @media (max-width: 768px) {
+        .methods-grid {
+          grid-template-columns: 1fr;
+        }
+
+        .form-row {
+          grid-template-columns: 1fr;
+        }
+
+        .crypto-options {
+          grid-template-columns: repeat(3, 1fr);
+        }
+
+        .page-title {
+          font-size: 28px;
+        }
+      }
+
+      @media (max-width: 480px) {
+        .phone-input-container {
+          flex-direction: column;
+          align-items: stretch;
+        }
+
+        .phone-prefix {
+          padding: 10px 15px;
+          border-right: none;
+          border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .crypto-options {
+          grid-template-columns: repeat(2, 1fr);
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <div class="page-header">
+        <h1 class="page-title">
+          <i class="fas fa-credit-card"></i> Payment Methods
+        </h1>
+        <p class="page-subtitle">
+          Choose your preferred payment method to complete your subscription
+        </p>
+      </div>
+
+      <!-- Order Summary -->
+      <div class="order-summary">
+        <h2 class="summary-title">
+          <i class="fas fa-receipt"></i> Order Summary
+        </h2>
+
+        <div class="summary-item">
+          <div>Premium Plan (Monthly)</div>
+          <div>$15.99</div>
+        </div>
+
+        <div class="summary-item">
+          <div>Tax</div>
+          <div>$1.20</div>
+        </div>
+
+        <div class="summary-total">
+          <div>Total</div>
+          <div>$17.19</div>
+        </div>
+      </div>
+
+      <!-- Payment Methods -->
+      <div class="payment-methods">
+        <h2 class="methods-title">
+          <i class="fas fa-wallet"></i> Select Payment Method
+        </h2>
+
+        <div class="methods-grid">
+          <!-- M-Pesa -->
+          <div class="payment-method" data-method="mpesa">
+            <div class="method-header">
+              <div class="method-icon icon-mpesa">
+                <i class="fas fa-mobile-alt"></i>
+              </div>
+              <div class="method-name">M-Pesa</div>
+            </div>
+            <div class="method-description">
+              Pay instantly with your M-Pesa mobile money account
+            </div>
+            <ul class="method-features">
+              <li><i class="fas fa-check-circle"></i> Instant confirmation</li>
+              <li><i class="fas fa-check-circle"></i> No extra fees</li>
+              <li><i class="fas fa-check-circle"></i> Secure payment</li>
+            </ul>
+            <span class="method-badge">Popular</span>
+          </div>
+
+          <!-- Airtel Money -->
+          <div class="payment-method" data-method="airtel">
+            <div class="method-header">
+              <div class="method-icon icon-airtel">
+                <i class="fas fa-mobile-alt"></i>
+              </div>
+              <div class="method-name">Airtel Money</div>
+            </div>
+            <div class="method-description">
+              Pay with your Airtel Money mobile wallet
+            </div>
+            <ul class="method-features">
+              <li><i class="fas fa-check-circle"></i> Instant confirmation</li>
+              <li><i class="fas fa-check-circle"></i> No extra fees</li>
+              <li><i class="fas fa-check-circle"></i> Secure payment</li>
+            </ul>
+          </div>
+
+          <!-- PayPal -->
+          <div class="payment-method" data-method="paypal">
+            <div class="method-header">
+              <div class="method-icon icon-paypal">
+                <i class="fab fa-paypal"></i>
+              </div>
+              <div class="method-name">PayPal</div>
+            </div>
+            <div class="method-description">
+              Pay with your PayPal account or credit card
+            </div>
+            <ul class="method-features">
+              <li><i class="fas fa-check-circle"></i> Buyer protection</li>
+              <li>
+                <i class="fas fa-check-circle"></i> International payments
+              </li>
+              <li><i class="fas fa-check-circle"></i> Secure payment</li>
+            </ul>
+          </div>
+
+          <!-- Cryptocurrency -->
+          <div class="payment-method" data-method="crypto">
+            <div class="method-header">
+              <div class="method-icon icon-crypto">
+                <i class="fab fa-bitcoin"></i>
+              </div>
+              <div class="method-name">Cryptocurrency</div>
+            </div>
+            <div class="method-description">
+              Pay with Bitcoin, Ethereum, or other cryptocurrencies
+            </div>
+            <ul class="method-features">
+              <li><i class="fas fa-check-circle"></i> Decentralized</li>
+              <li><i class="fas fa-check-circle"></i> Lower fees</li>
+              <li><i class="fas fa-check-circle"></i> Privacy focused</li>
+            </ul>
+          </div>
+
+          <!-- Credit/Debit Card -->
+          <div class="payment-method" data-method="card">
+            <div class="method-header">
+              <div class="method-icon icon-card">
+                <i class="far fa-credit-card"></i>
+              </div>
+              <div class="method-name">Credit/Debit Card</div>
+            </div>
+            <div class="method-description">
+              Pay with Visa, Mastercard, or American Express
+            </div>
+            <ul class="method-features">
+              <li><i class="fas fa-check-circle"></i> Worldwide acceptance</li>
+              <li><i class="fas fa-check-circle"></i> Instant confirmation</li>
+              <li><i class="fas fa-check-circle"></i> Secure encryption</li>
+            </ul>
+          </div>
+
+          <!-- Bank Transfer -->
+          <div class="payment-method" data-method="bank">
+            <div class="method-header">
+              <div class="method-icon icon-bank">
+                <i class="fas fa-university"></i>
+              </div>
+              <div class="method-name">Bank Transfer</div>
+            </div>
+            <div class="method-description">
+              Direct bank transfer from your account
+            </div>
+            <ul class="method-features">
+              <li><i class="fas fa-check-circle"></i> No transaction fees</li>
+              <li><i class="fas fa-check-circle"></i> High security</li>
+              <li>
+                <i class="fas fa-check-circle"></i> May take 1-2 business days
+              </li>
+            </ul>
+          </div>
+        </div>
+      </div>
+
+      <!-- M-Pesa Payment Form -->
+      <div class="payment-form-container" id="mpesa-form">
+        <h2 class="form-title">
+          <i class="fas fa-mobile-alt"></i> M-Pesa Payment
+        </h2>
+
+        <div class="form-group">
+          <label class="form-label">Phone Number *</label>
+          <div class="phone-input-container">
+            <div class="phone-prefix">+254</div>
+            <input
+              type="tel"
+              class="phone-input"
+              placeholder="7XX XXX XXX"
+              required
+            />
+          </div>
+          <p class="form-hint">
+            You will receive a prompt on your phone to confirm payment
+          </p>
+        </div>
+
+        <button class="btn" id="mpesa-pay-btn">
+          <i class="fas fa-lock"></i> Pay with M-Pesa
+        </button>
+
+        <div class="security-badge">
+          <p>
+            <i class="fas fa-shield-alt"></i> Your payment is secure and
+            encrypted
+          </p>
+        </div>
+      </div>
+
+      <!-- Airtel Money Payment Form -->
+      <div class="payment-form-container" id="airtel-form">
+        <h2 class="form-title">
+          <i class="fas fa-mobile-alt"></i> Airtel Money Payment
+        </h2>
+
+        <div class="form-group">
+          <label class="form-label">Phone Number *</label>
+          <div class="phone-input-container">
+            <div class="phone-prefix">+256</div>
+            <input
+              type="tel"
+              class="phone-input"
+              placeholder="7XX XXX XXX"
+              required
+            />
+          </div>
+          <p class="form-hint">
+            You will receive a prompt on your phone to confirm payment
+          </p>
+        </div>
+
+        <button class="btn" id="airtel-pay-btn">
+          <i class="fas fa-lock"></i> Pay with Airtel Money
+        </button>
+
+        <div class="security-badge">
+          <p>
+            <i class="fas fa-shield-alt"></i> Your payment is secure and
+            encrypted
+          </p>
+        </div>
+      </div>
+
+      <!-- PayPal Payment Form -->
+      <div class="payment-form-container" id="paypal-form">
+        <h2 class="form-title"><i class="fab fa-paypal"></i> PayPal Payment</h2>
+
+        <div class="form-group">
+          <label class="form-label">PayPal Email *</label>
+          <input
+            type="email"
+            class="form-input"
+            placeholder="your@email.com"
+            required
+          />
+        </div>
+
+        <button
+          class="btn"
+          id="paypal-pay-btn"
+          style="background: var(--paypal)"
+        >
+          <i classfab fa-paypal></i> Continue to PayPal
+        </button>
+
+        <div class="security-badge">
+          <p>
+            <i class="fas fa-shield-alt"></i> Your payment is secure and
+            encrypted
+          </p>
+        </div>
+      </div>
+
+      <!-- Crypto Payment Form -->
+      <div class="payment-form-container" id="crypto-form">
+        <h2 class="form-title">
+          <i class="fab fa-bitcoin"></i> Cryptocurrency Payment
+        </h2>
+
+        <div class="form-group">
+          <label class="form-label">Select Cryptocurrency *</label>
+          <div class="crypto-options">
+            <div class="crypto-option selected" data-crypto="btc">
+              <div class="crypto-icon"><i class="fab fa-bitcoin"></i></div>
+              <div class="crypto-name">Bitcoin</div>
+            </div>
+            <div class="crypto-option" data-crypto="eth">
+              <div class="crypto-icon"><i class="fab fa-ethereum"></i></div>
+              <div class="crypto-name">Ethereum</div>
+            </div>
+            <div class="crypto-option" data-crypto="usdt">
+              <div class="crypto-icon"><i class="fas fa-dollar-sign"></i></div>
+              <div class="crypto-name">USDT</div>
+            </div>
+            <div class="crypto-option" data-crypto="doge">
+              <div class="crypto-icon"><i class="fas fa-dog"></i></div>
+              <div class="crypto-name">Dogecoin</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label">Payment Amount</label>
+          <input type="text" class="form-input" value="0.00054 BTC" readonly />
+          <p class="form-hint">
+            Amount will update based on current exchange rates
+          </p>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label">Wallet Address</label>
+          <input
+            type="text"
+            class="form-input"
+            value="1A1zP1eP5QGefi2DMPTfTL5SLmv7DivfNa"
+            readonly
+          />
+          <p class="form-hint">Send exact amount to this address</p>
+        </div>
+
+        <button
+          class="btn"
+          id="crypto-pay-btn"
+          style="background: var(--crypto)"
+        >
+          <i class="fas fa-qrcode"></i> Show QR Code
+        </button>
+
+        <div class="security-badge">
+          <p>
+            <i class="fas fa-shield-alt"></i> Your payment is secure and
+            encrypted
+          </p>
+        </div>
+      </div>
+
+      <!-- Card Payment Form -->
+      <div class="payment-form-container" id="card-form">
+        <h2 class="form-title">
+          <i class="far fa-credit-card"></i> Card Payment
+        </h2>
+
+        <div class="form-group">
+          <label class="form-label">Card Number *</label>
+          <input
+            type="text"
+            class="form-input"
+            placeholder="1234 5678 9012 3456"
+            required
+          />
+        </div>
+
+        <div class="form-row">
+          <div class="form-group">
+            <label class="form-label">Expiry Date *</label>
+            <input
+              type="text"
+              class="form-input"
+              placeholder="MM/YY"
+              required
+            />
+          </div>
+
+          <div class="form-group">
+            <label class="form-label">CVV *</label>
+            <input type="text" class="form-input" placeholder="123" required />
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label">Cardholder Name *</label>
+          <input
+            type="text"
+            class="form-input"
+            placeholder="John Doe"
+            required
+          />
+        </div>
+
+        <button class="btn" id="card-pay-btn">
+          <i class="fas fa-lock"></i> Pay $17.19
+        </button>
+
+        <div class="security-badge">
+          <p>
+            <i class="fas fa-shield-alt"></i> Your payment is secure and
+            encrypted
+          </p>
+        </div>
+      </div>
+
+      <!-- Bank Transfer Form -->
+      <div class="payment-form-container" id="bank-form">
+        <h2 class="form-title">
+          <i class="fas fa-university"></i> Bank Transfer
+        </h2>
+
+        <div class="form-group">
+          <label class="form-label">Account Name</label>
+          <input
+            type="text"
+            class="form-input"
+            value="CineStream+ Inc."
+            readonly
+          />
+        </div>
+
+        <div class="form-group">
+          <label class="form-label">Account Number</label>
+          <input type="text" class="form-input" value="1234567890" readonly />
+        </div>
+
+        <div class="form-group">
+          <label class="form-label">Bank Name</label>
+          <input
+            type="text"
+            class="form-input"
+            value="Global Bank International"
+            readonly
+          />
+        </div>
+
+        <div class="form-group">
+          <label class="form-label">SWIFT/BIC Code</label>
+          <input type="text" class="form-input" value="GBIUS33" readonly />
+        </div>
+
+        <div class="form-group">
+          <label class="form-label">Reference</label>
+          <input type="text" class="form-input" value="CSP-7894321" readonly />
+          <p class="form-hint">
+            Please include this reference in your transfer
+          </p>
+        </div>
+
+        <button class="btn" id="bank-pay-btn" style="background: var(--info)">
+          <i class="fas fa-download"></i> Download Invoice
+        </button>
+      </div>
+    </div>
+
+    <script>
+      document.addEventListener('DOMContentLoaded', function () {
+        const paymentMethods = document.querySelectorAll('.payment-method');
+        const paymentForms = document.querySelectorAll(
+          '.payment-form-container'
+        );
+
+        // Handle payment method selection
+        paymentMethods.forEach((method) => {
+          method.addEventListener('click', function () {
+            // Remove selected class from all methods
+            paymentMethods.forEach((m) => m.classList.remove('selected'));
+
+            // Add selected class to clicked method
+            this.classList.add('selected');
+
+            // Hide all forms
+            paymentForms.forEach((form) => form.classList.remove('active'));
+
+            // Show the corresponding form
+            const methodType = this.getAttribute('data-method');
+            document
+              .getElementById(`${methodType}-form`)
+              .classList.add('active');
+
+            // Scroll to form
+            document.getElementById(`${methodType}-form`).scrollIntoView({
+              behavior: 'smooth',
+              block: 'start',
+            });
+          });
+        });
+
+        // Handle crypto selection
+        const cryptoOptions = document.querySelectorAll('.crypto-option');
+        cryptoOptions.forEach((option) => {
+          option.addEventListener('click', function () {
+            cryptoOptions.forEach((o) => o.classList.remove('selected'));
+            this.classList.add('selected');
+
+            // Update amount based on selected crypto (simulated)
+            const crypto = this.getAttribute('data-crypto');
+            const amountField = document.querySelector(
+              '#crypto-form .form-input'
+            );
+
+            if (crypto === 'btc') {
+              amountField.value = '0.00054 BTC';
+            } else if (crypto === 'eth') {
+              amountField.value = '0.0087 ETH';
+            } else if (crypto === 'usdt') {
+              amountField.value = '17.19 USDT';
+            } else if (crypto === 'doge') {
+              amountField.value = '102.45 DOGE';
+            }
+          });
+        });
+
+        // Handle payment button clicks
+        const payButtons = document.querySelectorAll('.btn');
+        payButtons.forEach((button) => {
+          button.addEventListener('click', function (e) {
+            e.preventDefault();
+
+            // Show processing state
+            const originalText = this.innerHTML;
+            this.innerHTML =
+              '<i class="fas fa-spinner fa-spin"></i> Processing...';
+            this.disabled = true;
+
+            // Simulate payment processing
+            setTimeout(() => {
+              alert('Payment successful! Thank you for your subscription.');
+              this.innerHTML = originalText;
+              this.disabled = false;
+            }, 2000);
+          });
+        });
+
+        // Format card number input
+        const cardInput = document.querySelector(
+          'input[placeholder="1234 5678 9012 3456"]'
+        );
+        if (cardInput) {
+          cardInput.addEventListener('input', function (e) {
+            let value = e.target.value.replace(/\D/g, '').substring(0, 16);
+            let formattedValue = '';
+
+            for (let i = 0; i < value.length; i++) {
+              if (i > 0 && i % 4 === 0) {
+                formattedValue += ' ';
+              }
+              formattedValue += value[i];
+            }
+
+            e.target.value = formattedValue;
+          });
+        }
+
+        // Format expiry date input
+        const expiryInput = document.querySelector(
+          'input[placeholder="MM/YY"]'
+        );
+        if (expiryInput) {
+          expiryInput.addEventListener('input', function (e) {
+            let value = e.target.value.replace(/\D/g, '').substring(0, 4);
+            if (value.length > 2) {
+              e.target.value = `${value.substring(0, 2)}/${value.substring(2)}`;
+            } else {
+              e.target.value = value;
+            }
+          });
+        }
+      });
+    </script>
+  </body>
+</html>

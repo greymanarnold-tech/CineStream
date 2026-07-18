@@ -1,0 +1,784 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Privacy Policy | CineStream+</title>
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+    />
+    <style>
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      }
+
+      :root {
+        --primary: #141414;
+        --secondary: #1f1f1f;
+        --accent: #e50914;
+        --text: #ffffff;
+        --text-secondary: #b3b3b3;
+        --card-bg: #181818;
+        --card-hover: #2d2d2d;
+        --success: #2ecc71;
+        --warning: #f39c12;
+        --info: #3498db;
+      }
+
+      body {
+        background-color: var(--primary);
+        color: var(--text);
+        line-height: 1.6;
+        padding: 20px;
+        min-height: 100vh;
+      }
+
+      .container {
+        max-width: 1000px;
+        margin: 0 auto;
+      }
+
+      .page-header {
+        text-align: center;
+        margin-bottom: 40px;
+        padding-bottom: 20px;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+      }
+
+      .page-title {
+        font-size: 32px;
+        margin-bottom: 15px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 15px;
+      }
+
+      .last-updated {
+        color: var(--text-secondary);
+        font-size: 16px;
+        margin-top: 10px;
+      }
+
+      /* Table of Contents */
+      .toc-container {
+        background: var(--card-bg);
+        border-radius: 10px;
+        padding: 25px;
+        margin-bottom: 30px;
+        position: sticky;
+        top: 20px;
+        z-index: 100;
+      }
+
+      .toc-title {
+        font-size: 20px;
+        margin-bottom: 15px;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+      }
+
+      .toc-list {
+        list-style-type: none;
+        columns: 2;
+        column-gap: 20px;
+      }
+
+      .toc-list li {
+        margin-bottom: 10px;
+        break-inside: avoid;
+      }
+
+      .toc-list a {
+        color: var(--text);
+        text-decoration: none;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        transition: color 0.3s;
+        padding: 5px 0;
+      }
+
+      .toc-list a:hover {
+        color: var(--accent);
+      }
+
+      /* Policy Content */
+      .policy-content {
+        background: var(--card-bg);
+        border-radius: 10px;
+        padding: 30px;
+        margin-bottom: 30px;
+      }
+
+      .policy-section {
+        margin-bottom: 40px;
+        scroll-margin-top: 20px;
+      }
+
+      .policy-section:last-child {
+        margin-bottom: 0;
+      }
+
+      .section-title {
+        font-size: 24px;
+        margin-bottom: 15px;
+        color: var(--accent);
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        padding-bottom: 10px;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+      }
+
+      .section-content {
+        color: var(--text-secondary);
+        line-height: 1.8;
+      }
+
+      .section-content p {
+        margin-bottom: 15px;
+      }
+
+      .section-content ul,
+      .section-content ol {
+        margin-left: 20px;
+        margin-bottom: 15px;
+      }
+
+      .section-content li {
+        margin-bottom: 8px;
+      }
+
+      .highlight {
+        background: rgba(255, 255, 255, 0.05);
+        padding: 15px;
+        border-radius: 8px;
+        margin: 15px 0;
+        border-left: 3px solid var(--accent);
+      }
+
+      /* Contact Section */
+      .contact-section {
+        background: var(--card-bg);
+        border-radius: 10px;
+        padding: 30px;
+        text-align: center;
+      }
+
+      .contact-title {
+        font-size: 24px;
+        margin-bottom: 15px;
+      }
+
+      .contact-info {
+        color: var(--text-secondary);
+        margin-bottom: 25px;
+        max-width: 600px;
+        margin-left: auto;
+        margin-right: auto;
+      }
+
+      .contact-details {
+        display: flex;
+        justify-content: center;
+        flex-wrap: wrap;
+        gap: 30px;
+        margin-top: 20px;
+      }
+
+      .contact-method {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 10px;
+      }
+
+      .contact-icon {
+        width: 50px;
+        height: 50px;
+        border-radius: 50%;
+        background: var(--secondary);
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        font-size: 20px;
+        color: var(--accent);
+      }
+
+      /* Back to top */
+      .back-to-top {
+        position: fixed;
+        bottom: 30px;
+        right: 30px;
+        width: 50px;
+        height: 50px;
+        border-radius: 50%;
+        background: var(--accent);
+        color: white;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        text-decoration: none;
+        font-size: 20px;
+        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+        transition: all 0.3s;
+        opacity: 0;
+        visibility: hidden;
+        z-index: 1000;
+      }
+
+      .back-to-top.visible {
+        opacity: 1;
+        visibility: visible;
+      }
+
+      .back-to-top:hover {
+        transform: translateY(-5px);
+        background: var(--accent-light);
+      }
+
+      /* Responsive Design */
+      @media (max-width: 768px) {
+        .toc-list {
+          columns: 1;
+        }
+
+        .page-title {
+          font-size: 28px;
+        }
+
+        .section-title {
+          font-size: 22px;
+        }
+
+        .contact-details {
+          flex-direction: column;
+          gap: 20px;
+        }
+
+        .back-to-top {
+          bottom: 20px;
+          right: 20px;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <div class="page-header">
+        <h1 class="page-title">
+          <i class="fas fa-shield-alt"></i> Privacy Policy
+        </h1>
+        <p class="last-updated">Last updated: October 15, 2023</p>
+      </div>
+
+      <!-- Table of Contents -->
+      <div class="toc-container">
+        <h2 class="toc-title"><i class="fas fa-list"></i> Table of Contents</h2>
+        <ul class="toc-list">
+          <li>
+            <a href="#info-we-collect"
+              ><i class="fas fa-chevron-right"></i> Information We Collect</a
+            >
+          </li>
+          <li>
+            <a href="#how-we-use"
+              ><i class="fas fa-chevron-right"></i> How We Use Your
+              Information</a
+            >
+          </li>
+          <li>
+            <a href="#info-sharing"
+              ><i class="fas fa-chevron-right"></i> Information Sharing</a
+            >
+          </li>
+          <li>
+            <a href="#data-security"
+              ><i class="fas fa-chevron-right"></i> Data Security</a
+            >
+          </li>
+          <li>
+            <a href="#your-rights"
+              ><i class="fas fa-chevron-right"></i> Your Rights</a
+            >
+          </li>
+          <li>
+            <a href="#cookies"
+              ><i class="fas fa-chevron-right"></i> Cookies & Tracking</a
+            >
+          </li>
+          <li>
+            <a href="#children-privacy"
+              ><i class="fas fa-chevron-right"></i> Children's Privacy</a
+            >
+          </li>
+          <li>
+            <a href="#changes"
+              ><i class="fas fa-chevron-right"></i> Policy Changes</a
+            >
+          </li>
+          <li>
+            <a href="#contact"
+              ><i class="fas fa-chevron-right"></i> Contact Us</a
+            >
+          </li>
+        </ul>
+      </div>
+
+      <!-- Policy Content -->
+      <div class="policy-content">
+        <section id="info-we-collect" class="policy-section">
+          <h2 class="section-title">
+            <i class="fas fa-database"></i> Information We Collect
+          </h2>
+          <div class="section-content">
+            <p>
+              We collect information to provide better services to all our
+              users. The types of information we collect include:
+            </p>
+
+            <h3>Information you provide to us</h3>
+            <ul>
+              <li>
+                <strong>Account Information:</strong> When you create an
+                account, we collect your name, email address, and password.
+              </li>
+              <li>
+                <strong>Profile Information:</strong> You may provide additional
+                information for your profile, such as birthday, gender, and
+                preferences.
+              </li>
+              <li>
+                <strong>Payment Information:</strong> When you add a payment
+                method, we collect payment details such as credit card numbers
+                and billing address.
+              </li>
+              <li>
+                <strong>Communications:</strong> If you contact us, we collect
+                your communication and any information you choose to provide.
+              </li>
+            </ul>
+
+            <h3>Information we collect automatically</h3>
+            <ul>
+              <li>
+                <strong>Usage Information:</strong> We collect information about
+                your activity on our services, such as titles you watch, search
+                queries, and interactions with content.
+              </li>
+              <li>
+                <strong>Device Information:</strong> We collect device-specific
+                information such as hardware model, operating system, and unique
+                device identifiers.
+              </li>
+              <li>
+                <strong>Location Information:</strong> We may collect and
+                process information about your general location.
+              </li>
+              <li>
+                <strong>Cookies and Similar Technologies:</strong> We use
+                various technologies to collect and store information when you
+                use our services.
+              </li>
+            </ul>
+          </div>
+        </section>
+
+        <section id="how-we-use" class="policy-section">
+          <h2 class="section-title">
+            <i class="fas fa-cogs"></i> How We Use Your Information
+          </h2>
+          <div class="section-content">
+            <p>
+              We use the information we collect to provide, maintain, and
+              improve our services, which includes:
+            </p>
+
+            <ul>
+              <li>
+                Providing and delivering the products and services you request
+              </li>
+              <li>Processing transactions and sending related information</li>
+              <li>
+                Personalizing your experience by providing content
+                recommendations
+              </li>
+              <li>Maintaining and improving our services</li>
+              <li>Developing new products and services</li>
+              <li>
+                Measuring performance and analyzing how our services are used
+              </li>
+              <li>
+                Communicating with you about products, services, and promotional
+                offers
+              </li>
+              <li>
+                Providing customer support and responding to your inquiries
+              </li>
+            </ul>
+
+            <div class="highlight">
+              <p>
+                <strong>Legal Basis for Processing:</strong> We process your
+                personal information for the purposes described in this policy,
+                based on the following legal grounds: (1) with your consent; (2)
+                to perform a contract with you; (3) for our legitimate business
+                interests; and (4) to comply with legal obligations.
+              </p>
+            </div>
+          </div>
+        </section>
+
+        <section id="info-sharing" class="policy-section">
+          <h2 class="section-title">
+            <i class="fas fa-exchange-alt"></i> Information Sharing
+          </h2>
+          <div class="section-content">
+            <p>
+              We do not sell your personal information to third parties. We
+              share your information only in the following circumstances:
+            </p>
+
+            <h3>With your consent</h3>
+            <p>
+              We will share personal information with companies, organizations,
+              or individuals outside of CineStream+ when we have your consent to
+              do so.
+            </p>
+
+            <h3>For external processing</h3>
+            <p>
+              We provide personal information to our affiliates and other
+              trusted businesses or persons to process it for us, based on our
+              instructions and in compliance with our Privacy Policy and any
+              other appropriate confidentiality and security measures.
+            </p>
+
+            <h3>For legal reasons</h3>
+            <p>
+              We will share personal information with companies, organizations,
+              or individuals outside of CineStream+ if we have a good-faith
+              belief that access, use, preservation, or disclosure of the
+              information is reasonably necessary to:
+            </p>
+
+            <ul>
+              <li>
+                Meet any applicable law, regulation, legal process, or
+                enforceable governmental request.
+              </li>
+              <li>
+                Enforce applicable Terms of Service, including investigation of
+                potential violations.
+              </li>
+              <li>
+                Detect, prevent, or otherwise address fraud, security, or
+                technical issues.
+              </li>
+              <li>
+                Protect against harm to the rights, property or safety of our
+                users, or the public as required or permitted by law.
+              </li>
+            </ul>
+          </div>
+        </section>
+
+        <section id="data-security" class="policy-section">
+          <h2 class="section-title">
+            <i class="fas fa-lock"></i> Data Security
+          </h2>
+          <div class="section-content">
+            <p>
+              We work hard to protect our users from unauthorized access to or
+              unauthorized alteration, disclosure, or destruction of information
+              we hold. In particular:
+            </p>
+
+            <ul>
+              <li>We encrypt many of our services using SSL.</li>
+              <li>
+                We review our information collection, storage, and processing
+                practices, including physical security measures, to guard
+                against unauthorized access to systems.
+              </li>
+              <li>
+                We restrict access to personal information to employees,
+                contractors, and agents who need to know that information in
+                order to process it for us, and who are subject to strict
+                contractual confidentiality obligations.
+              </li>
+            </ul>
+
+            <p>
+              Despite our efforts, no security measures are perfectly secure,
+              and we cannot guarantee the security of your information.
+            </p>
+          </div>
+        </section>
+
+        <section id="your-rights" class="policy-section">
+          <h2 class="section-title">
+            <i class="fas fa-user-check"></i> Your Rights
+          </h2>
+          <div class="section-content">
+            <p>
+              You have rights regarding your personal information, including:
+            </p>
+
+            <ul>
+              <li>
+                <strong>Access:</strong> You can request a copy of the personal
+                information we hold about you.
+              </li>
+              <li>
+                <strong>Correction:</strong> You can ask us to correct
+                inaccurate or incomplete personal information about you.
+              </li>
+              <li>
+                <strong>Deletion:</strong> You can ask us to delete personal
+                information about you in certain circumstances.
+              </li>
+              <li>
+                <strong>Objection:</strong> You can object to our processing of
+                your personal information in certain circumstances.
+              </li>
+              <li>
+                <strong>Restriction:</strong> You can ask us to restrict our
+                processing of your personal information in certain
+                circumstances.
+              </li>
+              <li>
+                <strong>Portability:</strong> You can ask us to provide your
+                personal information in a structured, commonly used, and
+                machine-readable format.
+              </li>
+              <li>
+                <strong>Withdraw Consent:</strong> Where we rely on your consent
+                to process personal information, you have the right to withdraw
+                that consent at any time.
+              </li>
+            </ul>
+
+            <p>
+              To exercise any of these rights, please contact us using the
+              details in the "Contact Us" section.
+            </p>
+          </div>
+        </section>
+
+        <section id="cookies" class="policy-section">
+          <h2 class="section-title">
+            <i class="fas fa-cookie-bite"></i> Cookies & Tracking Technologies
+          </h2>
+          <div class="section-content">
+            <p>
+              We use cookies and similar technologies to provide and improve our
+              services, including:
+            </p>
+
+            <h3>Types of cookies we use</h3>
+            <ul>
+              <li>
+                <strong>Essential cookies:</strong> Required for the operation
+                of our services
+              </li>
+              <li>
+                <strong>Analytical/performance cookies:</strong> Allow us to
+                recognize and count the number of visitors
+              </li>
+              <li>
+                <strong>Functionality cookies:</strong> Enable us to personalize
+                content and remember preferences
+              </li>
+              <li>
+                <strong>Targeting cookies:</strong> Record your visit and pages
+                you visit to make advertising more relevant
+              </li>
+            </ul>
+
+            <h3>Managing cookies</h3>
+            <p>
+              Most web browsers allow you to control cookies through their
+              settings preferences. However, if you limit the ability to set
+              cookies, you may worsen your overall user experience.
+            </p>
+          </div>
+        </section>
+
+        <section id="children-privacy" class="policy-section">
+          <h2 class="section-title">
+            <i class="fas fa-child"></i> Children's Privacy
+          </h2>
+          <div class="section-content">
+            <p>
+              Our services are not intended for children under the age of 13. We
+              do not knowingly collect personal information from children under
+              13.
+            </p>
+
+            <p>
+              If you are a parent or guardian and believe that your child has
+              provided us with personal information without your consent, please
+              contact us, and we will take steps to delete such information from
+              our systems.
+            </p>
+
+            <p>
+              For users between 13 and 18 years old, we recommend that parents
+              and guardians review the services and help their children set up
+              appropriate accounts.
+            </p>
+          </div>
+        </section>
+
+        <section id="changes" class="policy-section">
+          <h2 class="section-title">
+            <i class="fas fa-exclamation-circle"></i> Changes to This Policy
+          </h2>
+          <div class="section-content">
+            <p>
+              We may change this Privacy Policy from time to time. We will post
+              any changes on this page and, if the changes are significant, we
+              will provide a more prominent notice.
+            </p>
+
+            <p>
+              We will also keep prior versions of this Privacy Policy in an
+              archive for your review. We encourage you to review our Privacy
+              Policy whenever you use our services to stay informed about our
+              information practices.
+            </p>
+
+            <p>
+              The date at the top of this Privacy Policy indicates when it was
+              last updated.
+            </p>
+          </div>
+        </section>
+      </div>
+
+      <!-- Contact Section -->
+      <section id="contact" class="contact-section">
+        <h2 class="contact-title">Contact Us</h2>
+        <p class="contact-info">
+          If you have any questions about this Privacy Policy or our practices,
+          please contact us using the following methods:
+        </p>
+
+        <div class="contact-details">
+          <div class="contact-method">
+            <div class="contact-icon">
+              <i class="fas fa-envelope"></i>
+            </div>
+            <div>
+              <h3>Email</h3>
+              <p>privacy@cinestream.com</p>
+            </div>
+          </div>
+
+          <div class="contact-method">
+            <div class="contact-icon">
+              <i class="fas fa-phone"></i>
+            </div>
+            <div>
+              <h3>Phone</h3>
+              <p>+1 (555) 123-PRIVACY</p>
+            </div>
+          </div>
+
+          <div class="contact-method">
+            <div class="contact-icon">
+              <i class="fas fa-mail-bulk"></i>
+            </div>
+            <div>
+              <h3>Mail</h3>
+              <p>
+                Privacy Office<br />CineStream+ Inc.<br />123 Streaming Lane<br />San
+                Francisco, CA 94107
+              </p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Back to Top Button -->
+      <a href="#" class="back-to-top" id="backToTop">
+        <i class="fas fa-arrow-up"></i>
+      </a>
+    </div>
+
+    <script>
+      document.addEventListener('DOMContentLoaded', function () {
+        // Smooth scrolling for table of contents links
+        document.querySelectorAll('.toc-list a').forEach((anchor) => {
+          anchor.addEventListener('click', function (e) {
+            e.preventDefault();
+
+            const targetId = this.getAttribute('href');
+            const targetElement = document.querySelector(targetId);
+
+            if (targetElement) {
+              window.scrollTo({
+                top: targetElement.offsetTop - 20,
+                behavior: 'smooth',
+              });
+            }
+          });
+        });
+
+        // Show/hide back to top button
+        const backToTopButton = document.getElementById('backToTop');
+
+        window.addEventListener('scroll', function () {
+          if (window.pageYOffset > 300) {
+            backToTopButton.classList.add('visible');
+          } else {
+            backToTopButton.classList.remove('visible');
+          }
+        });
+
+        // Back to top functionality
+        backToTopButton.addEventListener('click', function (e) {
+          e.preventDefault();
+          window.scrollTo({
+            top: 0,
+            behavior: 'smooth',
+          });
+        });
+
+        // Highlight current section in table of contents when scrolling
+        const sections = document.querySelectorAll('.policy-section');
+        const navLinks = document.querySelectorAll('.toc-list a');
+
+        window.addEventListener('scroll', function () {
+          let current = '';
+
+          sections.forEach((section) => {
+            const sectionTop = section.offsetTop;
+            const sectionHeight = section.clientHeight;
+
+            if (pageYOffset >= sectionTop - 100) {
+              current = section.getAttribute('id');
+            }
+          });
+
+          navLinks.forEach((link) => {
+            link.classList.remove('active');
+            if (link.getAttribute('href') === `#${current}`) {
+              link.classList.add('active');
+              link.style.color = 'var(--accent)';
+            } else {
+              link.style.color = '';
+            }
+          });
+        });
+      });
+    </script>
+  </body>
+</html>
