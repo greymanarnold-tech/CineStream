@@ -1,6 +1,7 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { supabase } from '../lib/supabaseClient';
+import { uploadMovieAsset, deleteMovieAsset } from '../lib/storage';
 import { useAuth } from '../context/AuthContext';
 
 const EMPTY = {
@@ -16,8 +17,12 @@ export default function Admin() {
   const [editing, setEditing] = useState(null);
   const [form, setForm] = useState(EMPTY);
   const [saving, setSaving] = useState(false);
+  const [uploading, setUploading] = useState(false);
+  const [uploadError, setUploadError] = useState('');
   const [messages, setMessages] = useState([]);
   const [payments, setPayments] = useState([]);
+  const posterInputRef = useRef(null);
+  const videoInputRef = useRef(null);
 
   useEffect(() => {
     if (profile?.is_admin) loadAll();
@@ -36,8 +41,38 @@ export default function Admin() {
   if (!session) return <div className="page"><div className="container text-center"><h1>Sign in required</h1><Link to="/auth" className="btn mt-2">Sign In</Link></div></div>;
   if (!profile?.is_admin) return <div className="page"><div className="container text-center"><h1>Admin access only</h1><p className="text-secondary mt-1">You don't have permission to view this page.</p><Link to="/" className="btn mt-2">Back home</Link></div></div>;
 
-  const startEdit = (m) => { setEditing(m.id); setForm(m); };
-  const cancelEdit = () => { setEditing(null); setForm(EMPTY); };
+  const startEdit = (m) => { setEditing(m.id); setForm(m); setUploadError(''); };
+  const cancelEdit = () => { setEditing(null); setForm(EMPTY); setUploadError(''); };
+
+  const handlePosterFile = async (e) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    if (!file.type.startsWith('image/')) { setUploadError('Poster must be an image file.'); return; }
+    setUploading(true); setUploadError('');
+    try {
+      const url = await uploadMovieAsset(file, 'posters');
+      setForm((f) => ({ ...f, poster_url: url }));
+    } catch (err) {
+      setUploadError(err.message || 'Failed to upload poster.');
+    } finally {
+      setUploading(false);
+    }
+  };
+
+  const handleVideoFile = async (e) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    if (!file.type.startsWith('video/')) { setUploadError('Please select a video file.'); return; }
+    setUploading(true); setUploadError('');
+    try {
+      const url = await uploadMovieAsset(file, 'videos');
+      setForm((f) => ({ ...f, video_url: url }));
+    } catch (err) {
+      setUploadError(err.message || 'Failed to upload video.');
+    } finally {
+      setUploading(false);
+    }
+  };
 
   const save = async (e) => {
     e.preventDefault();
@@ -54,7 +89,12 @@ export default function Admin() {
   };
 
   const remove = async (id) => {
-    if (!confirm('Delete this movie?')) return;
+    if (!confirm('Delete this movie? Its uploaded files will also be removed.')) return;
+    const movie = movies.find((m) => m.id === id);
+    if (movie) {
+      await deleteMovieAsset(movie.poster_url);
+      await deleteMovieAsset(movie.video_url);
+    }
     await supabase.from('movies').delete().eq('id', id);
     setMovies(movies.filter((m) => m.id !== id));
   };
@@ -85,14 +125,42 @@ export default function Admin() {
         {(tab === 'add' || (tab === 'movies' && editing)) && (
           <form onSubmit={save} className="card mb-3" style={{ padding: 30 }}>
             <h2 style={{ fontSize: 22, marginBottom: 20 }}>{editing ? 'Edit Movie' : 'Publish New Movie'}</h2>
+            {uploadError && <div className="alert alert-error mb-2"><i className="fas fa-exclamation-circle"></i> {uploadError}</div>}
+            {uploading && <div className="alert alert-success mb-2"><span className="spinner" style={{ width: 16, height: 16 }} /> Uploading file... please wait.</div>}
             <div className="form-row">
               <div className="form-group"><label className="form-label">Title *</label><input className="form-input" value={form.title} onChange={(e) => setForm({ ...form, title: e.target.value })} required /></div>
               <div className="form-group"><label className="form-label">Category</label><input className="form-input" value={form.category} onChange={(e) => setForm({ ...form, category: e.target.value })} placeholder="Sci-Fi, Action..." /></div>
             </div>
             <div className="form-group"><label className="form-label">Description</label><textarea className="form-input" value={form.description} onChange={(e) => setForm({ ...form, description: e.target.value })} style={{ minHeight: 100 }} /></div>
             <div className="form-row">
-              <div className="form-group"><label className="form-label">Poster URL</label><input className="form-input" value={form.poster_url} onChange={(e) => setForm({ ...form, poster_url: e.target.value })} placeholder="https://..." /></div>
-              <div className="form-group"><label className="form-label">Video URL</label><input className="form-input" value={form.video_url} onChange={(e) => setForm({ ...form, video_url: e.target.value })} placeholder="https://...mp4" /></div>
+              <div className="form-group">
+                <label className="form-label">Poster Image</label>
+                <div style={{ display: 'flex', gap: 10, alignItems: 'center', flexWrap: 'wrap' }}>
+                  <button type="button" onClick={() => posterInputRef.current?.click()} className="btn btn-outline" disabled={uploading}><i className="fas fa-upload"></i> Upload Image</button>
+                  <input ref={posterInputRef} type="file" accept="image/*" onChange={handlePosterFile} style={{ display: 'none' }} />
+                  {form.poster_url && <span style={{ color: 'var(--success)', fontSize: 14 }}><i className="fas fa-check-circle"></i> Uploaded</span>}
+                </div>
+                {form.poster_url && (
+                  <div style={{ marginTop: 10 }}>
+                    <img src={form.poster_url} alt="Poster preview" style={{ width: 100, height: 140, objectFit: 'cover', borderRadius: 6, border: '1px solid rgba(255,255,255,0.1)' }} />
+                  </div>
+                )}
+                <input className="form-input mt-1" value={form.poster_url} onChange={(e) => setForm({ ...form, poster_url: e.target.value })} placeholder="...or paste image URL" />
+              </div>
+              <div className="form-group">
+                <label className="form-label">Video File</label>
+                <div style={{ display: 'flex', gap: 10, alignItems: 'center', flexWrap: 'wrap' }}>
+                  <button type="button" onClick={() => videoInputRef.current?.click()} className="btn btn-outline" disabled={uploading}><i className="fas fa-upload"></i> Upload Video</button>
+                  <input ref={videoInputRef} type="file" accept="video/*" onChange={handleVideoFile} style={{ display: 'none' }} />
+                  {form.video_url && <span style={{ color: 'var(--success)', fontSize: 14 }}><i className="fas fa-check-circle"></i> Uploaded</span>}
+                </div>
+                {form.video_url && (
+                  <div style={{ marginTop: 10, padding: 10, background: 'var(--secondary)', borderRadius: 6, fontSize: 13, color: 'var(--text-secondary)', wordBreak: 'break-all' }}>
+                    <i className="fas fa-film"></i> {form.video_url.split('/').pop()}
+                  </div>
+                )}
+                <input className="form-input mt-1" value={form.video_url} onChange={(e) => setForm({ ...form, video_url: e.target.value })} placeholder="...or paste video URL" />
+              </div>
             </div>
             <div className="form-row">
               <div className="form-group">
@@ -115,7 +183,7 @@ export default function Admin() {
               </div>
             </div>
             <div style={{ display: 'flex', gap: 15 }}>
-              <button type="submit" className="btn" disabled={saving}>{saving ? <span className="spinner" style={{ width: 18, height: 18 }} /> : (editing ? 'Update' : 'Publish Movie')}</button>
+              <button type="submit" className="btn" disabled={saving || uploading}>{saving ? <span className="spinner" style={{ width: 18, height: 18 }} /> : (editing ? 'Update' : 'Publish Movie')}</button>
               {editing && <button type="button" onClick={cancelEdit} className="btn btn-outline">Cancel</button>}
             </div>
           </form>
