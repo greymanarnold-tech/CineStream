@@ -2,6 +2,7 @@ import { useEffect, useState, useRef } from 'react';
 import { useParams, Link, useNavigate } from 'react-router-dom';
 import { supabase } from '../lib/supabaseClient';
 import { useAuth } from '../context/AuthContext';
+import ShareModal from '../components/ShareModal';
 
 export default function Watch() {
   const { id } = useParams();
@@ -14,6 +15,7 @@ export default function Watch() {
   const [bookmarked, setBookmarked] = useState(false);
   const [loading, setLoading] = useState(true);
   const [submitting, setSubmitting] = useState(false);
+  const [shareOpen, setShareOpen] = useState(false);
   const videoRef = useRef(null);
 
   useEffect(() => {
@@ -121,7 +123,7 @@ export default function Watch() {
               <i className={bookmarked ? 'fas fa-bookmark' : 'far fa-bookmark'}></i>
               <span>{bookmarked ? 'Saved' : 'Save'}</span>
             </button>
-            <button className="action-btn" style={actionBtnStyle(false)}>
+            <button onClick={() => setShareOpen(true)} className="action-btn" style={actionBtnStyle(false)}>
               <i className="far fa-share-square"></i>
               <span>Share</span>
             </button>
@@ -175,6 +177,8 @@ export default function Watch() {
           </div>
         </div>
       </div>
+
+      <ShareModal open={shareOpen} onClose={() => setShareOpen(false)} title={movie.title} />
     </div>
   );
 }

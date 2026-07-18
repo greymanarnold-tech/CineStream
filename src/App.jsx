@@ -13,6 +13,8 @@ import About from './pages/About';
 import Contact from './pages/Contact';
 import Privacy from './pages/Privacy';
 import Admin from './pages/Admin';
+import Playlists from './pages/Playlists';
+import PlaylistDetail from './pages/PlaylistDetail';
 import NotFound from './pages/NotFound';
 
 export default function App() {
@@ -34,6 +36,8 @@ export default function App() {
           <Route path="/contact" element={<Contact />} />
           <Route path="/privacy" element={<Privacy />} />
           <Route path="/admin" element={<Admin />} />
+          <Route path="/playlists" element={<Playlists />} />
+          <Route path="/playlist/:id" element={<PlaylistDetail />} />
           <Route path="*" element={<NotFound />} />
         </Routes>
       </main>
